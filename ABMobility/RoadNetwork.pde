@@ -26,7 +26,7 @@ public class RoadNetwork {
       JSONArray points = JSONlines.getJSONObject(i).getJSONObject("geometry").getJSONArray("coordinates");
 
       for(int j = 0; j<points.size(); j++) {
-           // Point coordinates to XY screen position -->
+        // Point coordinates to XY screen position -->
         PVector pos = toXY(points.getJSONArray(j).getFloat(0), points.getJSONArray(j).getFloat(1));
         
         // Node already exists (same X and Y pos). Connect  -->
@@ -112,6 +112,9 @@ class NetworkEdge {
   private float cost;
 
   NetworkEdge(Pathfinder graph, Node start, int cid, float distance){
+    /* NOTE: Network edges are not yet used.
+    Later they will be implemented for congestion.
+    */
     this.graph = graph;
     this.start = start;
     this.cid = cid;
@@ -133,6 +136,9 @@ class NetworkEdge {
     this.agentCount--;
   }
 
-  void updateCost(){}
+  void updateCost(){
+    // TODO: Implement edge cost as a congestion weight.
+    // Agents move more slowly on congested roads.
+  }
 
 }

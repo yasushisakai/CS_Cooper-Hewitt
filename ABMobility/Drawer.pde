@@ -1,6 +1,7 @@
 import deadpixel.keystone.*;
 
-public class Drawer{
+
+public class Drawer {
   Keystone ks;
   int nbProjector = 1;
   CornerPinSurface[] surface = new CornerPinSurface[nbProjector];
@@ -8,19 +9,19 @@ public class Drawer{
   PGraphics subSurface;
   
   
-  Drawer(PApplet parent){
+  Drawer(PApplet parent) {
     ks = new Keystone(parent);
     offscreenSurface = createGraphics(playGroundWidth, playGroundHeight, P2D);
   }
   
-  void initSurface(){
+  void initSurface() {
     for (int i=0; i<nbProjector;i++){
       surface[i] = ks.createCornerPinSurface((int)playGroundWidth/nbProjector, (int)playGroundHeight, 50);
     }
     subSurface = createGraphics(playGroundWidth/nbProjector, playGroundHeight, P2D);
   }
   
-  void drawSurface(){
+  void drawSurface() {
       offscreenSurface.beginDraw();
       offscreenSurface.clear();
       offscreenSurface.background(0);
@@ -31,7 +32,7 @@ public class Drawer{
       offscreenSurface.rect(playGroundWidth/2,playGroundHeight/2,2128*scale, 1330*scale);
       universe.run(offscreenSurface);
       offscreenSurface.endDraw();
-      for (int i=0; i<nbProjector;i++){
+      for (int i=0; i<nbProjector; i++){
         subSurface.beginDraw();
         subSurface.clear();
         subSurface.image(offscreenSurface, -(playGroundWidth/nbProjector)*i, 0);
@@ -42,8 +43,7 @@ public class Drawer{
   }
   
   void drawTableBackGround(PGraphics p) {
-    p.fill(125);  
-    //p.rect(0, 0, displayWidth, displayHeight);
+    p.fill(125);
     p.image(bg,0,0,displayWidth,displayHeight);
   }
 }

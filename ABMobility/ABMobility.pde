@@ -1,3 +1,8 @@
+/*
+This is the main file for the simulation.
+
+*/
+
 Drawer drawer;
 
 float scale = 0.5;
@@ -22,6 +27,12 @@ void setup(){
   drawer.initSurface();
   universe = new Universe();
   universe.InitUniverse();
+
+  // TODO:
+  1. instantiate all of the blocks from a spreadsheet.
+  2. set up the grid
+  3. instantiate all of the agents from a spreadsheet.
+
 } 
 
 void draw(){
@@ -37,7 +48,7 @@ void drawScene() {
 
 void keyPressed() {
   switch(key) {
-    //Keystone trigger  
+  //Keystone trigger  
   case 'k':
     drawer.ks.toggleCalibration();
     break;  
