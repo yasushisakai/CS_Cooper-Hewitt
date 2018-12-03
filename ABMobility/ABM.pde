@@ -30,6 +30,8 @@ public class Universe {
   // Booleans manage threading of world updates.
   private boolean updatingWorld1;
   private boolean updatingWorld2;
+  private float world1LastRun;
+  private float world2LastRun;
   HashMap<String, Integer> colorMap;
   HashMap<String, Integer> colorMapGood;
   HashMap<String, Integer> colorMapBad;
@@ -107,8 +109,10 @@ public class Universe {
       updatingWorld1 = true;
       Thread t1 = new Thread(new Runnable() {
         public void run() {
+          world1LastRun = millis();
           world1.update();
           updatingWorld1 = false;
+          state.world1FrameRate = 1000.0 / (millis() - world1LastRun);
         }
       }
       );
@@ -118,8 +122,10 @@ public class Universe {
       updatingWorld2 = true;
       Thread t2 = new Thread(new Runnable() {
         public void run() {
+          world2LastRun = millis();
           world2.update();
           updatingWorld2 = false;
+          state.world2FrameRate = 1000.0 / (millis() - world2LastRun);
         }
       }
       );
@@ -134,6 +140,12 @@ public class Universe {
     pg.beginDraw();
     pg.shader(s);
     pg.rect(0, 0, pg.width, pg.height);
+    if(devMode){
+      pg.text("frameRate: " + int(frameRate) +
+          " world1FrameRate: "+ int(state.world1FrameRate) + 
+          " world2FrameRate: "+ int(state.world2FrameRate) 
+          , 10, 20);
+    }
     pg.endDraw();
   }
 
@@ -271,7 +283,6 @@ public class World {
     // default is  "ROR"
     return mobilityMotif;
   }
-
 
   public void createRandomAgents(int num, boolean zombie) {
     for (int i = 0; i < num; i++) {

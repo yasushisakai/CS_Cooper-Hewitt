@@ -29,9 +29,13 @@ class State {
 
   boolean isGlyph;
   public float slider;
+  private float world1FrameRate;
+  private float world2FrameRate;
 
   public State() {
     slider = 0.5;
     isGlyph = false;
+    world1FrameRate = 0.0;
+    world2FrameRate = 0.0;
   }
 }
