@@ -324,6 +324,11 @@ public class World {
     for (Agent a : agents) {
       a.update();
     }
+
+    if(id == 1){
+      RoadNetwork carNetwork = networks.get("car");
+      carNetwork.update();
+    }
   }
 
   public void draw(PGraphics p) {

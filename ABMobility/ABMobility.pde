@@ -71,8 +71,8 @@ void setup() {
   udpR = new UDPReceiver();
   if(!devMode){
     drawer.ks.load();
+    frameRate(30);
   }
-  frameRate(30);
 } 
 
 void draw() {

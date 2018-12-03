@@ -116,7 +116,6 @@ class NetworkEdgeManager {
     // TODO(Yasushi Sakai): what if null??
     newEdge.agents.add(agent);
     newEdge.isVisible = true;
-    newEdge.updateDensity();
     return newEdge;
   }
 
@@ -126,11 +125,16 @@ class NetworkEdgeManager {
       e.agents.remove(agent);
       if(e.agents.size() == 0){
         e.isVisible = false;
-      } else {
-        e.updateDensity();
       }
     }
   }
+
+  public void update(){
+    for(NetworkEdge e: edges){
+        e.updateDensity();
+    }
+  }
+
 
   // helper function to make "aid-bid" string
   private String nodesToIds(Node a, Node b){

@@ -143,6 +143,10 @@ public class RoadNetwork {
     }
   }
 
+  public void update(){
+    edgeManager.update();
+  }
+
   public void drawCongestion(PGraphics p){
     p.pushStyle();  
     edgeManager.draw(p);
