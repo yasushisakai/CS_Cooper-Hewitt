@@ -42,7 +42,6 @@ public boolean INIT_AGENTS_FROM_DATAFILE = true;
 public final String SIMULATED_POPULATION_DATA_FILEPATH = "data/simPopAmplified.csv";
 public final int NUM_AGENTS_PER_WORLD = 1000;
 
-
 Universe universe;
 boolean showBuilding = true;
 boolean showBackground = true;
@@ -52,7 +51,7 @@ boolean showAgent = true;
 boolean showZombie = false;
 boolean dynamicSlider = true;
 boolean showCollisionPotential = false;
-boolean showCongestionVis = true;
+boolean showCongestionVis = false;
 boolean showConnectionBetweenAgentAndBuilding = false;
 boolean showRemaninginAgentAndBuilding = false;
 boolean animatedGlyph = false;

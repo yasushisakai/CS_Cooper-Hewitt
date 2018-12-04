@@ -199,7 +199,7 @@ public class Agent {
       if (mobilityType.equals("car") && worldId==1){
         edge = map.edgeManager.updateEdge(this, srcNode, toNode);
         closeEdges.clear();
-        for(int i = pathIndex;i > pathIndex - 2 && i > 0; i--){
+        for(int i = pathIndex;i > pathIndex - 4 && i > 0; i--){
           Node nextNode = path.get(i);
           Node nextNextNode = path.get(i - 1);
           NetworkEdge e = map.edgeManager.findEdge(nextNode, nextNextNode);
@@ -361,7 +361,7 @@ public class Agent {
 
     switch(mobilityType) {
     case "car" :
-      maxSpeed = SCALE*1.4+ random(-SCALE*0.6, SCALE*0.6);
+      maxSpeed = SCALE*1.4+ random(-SCALE*0.3, SCALE*0.3);
       break;
     case "bike" :
       maxSpeed = SCALE*0.6+ random(-0.3*SCALE, 0.3*SCALE);
@@ -413,7 +413,7 @@ public class Agent {
         if(mobilityType.equals("car") && worldId ==1){
           edge = map.edgeManager.updateEdge(this  , srcNode, toNode);
           closeEdges.clear();                     
-          for(int i = pathIndex;i > pathIndex -   2 && i > 0; i--){
+          for(int i = pathIndex;i > pathIndex - 4 && i > 0; i--){
             Node nextNode = path.get(i);          
             Node nextNextNode = path.get(i - 1);  
             NetworkEdge e = map.edgeManager.findEdge(nextNode, nextNextNode);
@@ -428,19 +428,43 @@ public class Agent {
   }
 
   void updateSpeed() {
-    // from observation, e.density ranges from 0.14831 to 517.9554;
     if(edge != null) {
-      float coef = map(edge.density, 0.14, 10, 0.1, 1.0);
-      // do we liner? sigmoid? 
-      float adjustedSpeed = cubicEase(coef) * maxSpeed;
-      // float adjustedSpeed = coef * maxSpeed;
+      speed = maxSpeed;
       
-      if(edge.agents.size() > 4){
-        adjustedSpeed = adjustedSpeed * 0.4 + (adjustedSpeed * 0.6 / edge.agents.size());
+      float t = edge.evaluate(pos);
+      Agent closestAhead = null;
+      float minT = 100.0; 
+      float minDistance = 1000.0;
+      for(Agent a: edge.agents){
+        if(this == a){
+          continue;
+        }
+        float otherT = edge.evaluate(a.pos);
+        if(minT > otherT && t < otherT){
+          minT = otherT; 
+          closestAhead = a;
+          minDistance = dist(pos.x, pos.y, a.pos.x, a.pos.y);
+        }
       }
 
-      adjustedSpeed = min(max(adjustedSpeed, maxSpeed * 0.2), maxSpeed);
-      speed = adjustedSpeed;
+      if(closestAhead == null){
+        for(NetworkEdge e: closeEdges){
+          for(Agent a: e.agents){
+            float distance = dist(pos.x, pos.y, a.pos.x, a.pos.y);
+              if(minDistance > distance){
+                minDistance = distance;
+                closestAhead = a;
+              }
+            } 
+        }
+      }
+
+      if(closestAhead != null){
+        if(minDistance < 25){
+          speed *= 0.01;
+        }
+      }
+
     } else {
       speed = maxSpeed;      
     }
