@@ -62,6 +62,13 @@ class NetworkEdge {
     }
   }
 
+  public float evaluate(PVector p){
+    // rudimentary version
+    // we should first get the closest PVector first but....
+    float t = (p.x - start.x)/(end.x - start.x);
+    return t;
+  }
+
   void draw(PGraphics p){
     if(isVisible){
       int agentsNum = agents.size();
@@ -118,7 +125,7 @@ class NetworkEdgeManager {
     removeEdge(agent);
     
     // 2. assignAgent to new Edge, return this edge
-    NetworkEdge newEdge = idsToEdge.get(nodesToIds(newSrc, newDest));
+    NetworkEdge newEdge = findEdge(newSrc, newDest);
     // TODO(Yasushi Sakai): what if null??
     newEdge.agents.add(agent);
     newEdge.isVisible = true;
@@ -140,6 +147,10 @@ class NetworkEdgeManager {
         e.updateDensity();
         e.updateCost();
     }
+  }
+
+  public NetworkEdge findEdge(Node a, Node b){
+    return idsToEdge.get(nodesToIds(a, b));
   }
 
 

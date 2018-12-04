@@ -38,6 +38,7 @@ public class Agent {
   private HashMap<String, PImage[]> glyphsMap;
   private RoadNetwork map;  // Curent network used for mobility type.
   private NetworkEdge edge; // Current edge that it's sitting on
+  private ArrayList<NetworkEdge> closeEdges; // for looking up neighbors
   private int worldId;  // 1=Bad world; 2=Good world
 
   private int residentialBlockId;
@@ -74,10 +75,10 @@ public class Agent {
   private float turn;
   private float speed;
   private float maxSpeed;
-  private boolean isZombie;
-  private color myColor;
-
-
+  private boolean isZombie  ;
+  private color myColor;    
+                            
+                            
   Agent(HashMap<String, RoadNetwork> _networks, HashMap<String, PImage[]> _glyphsMap, int _worldId, 
     int _residentialBlockId, int _officeBlockId, int _amenityBlockId, 
     String _mobilityMotif, 
@@ -93,6 +94,7 @@ public class Agent {
     occupationType = _occupationType;
     age = _age;
     isZombie = false;
+    closeEdges = new ArrayList<NetworkEdge>();
   }
 
 
@@ -190,12 +192,19 @@ public class Agent {
     ArrayList<Node> newPath = map.graph.aStar(srcNode, destNode);
     if ( newPath != null ) {
       path = newPath;
-      pathIndex = path.size() - 2; // what happens if there are only two nodes?
+      pathIndex = path.size() - 2; 
       toNode = path.get(pathIndex);
       afterNode = pathIndex > 1 ? path.get(pathIndex - 1) : toNode;
       // only update when we are in car and bad
       if (mobilityType.equals("car") && worldId==1){
         edge = map.edgeManager.updateEdge(this, srcNode, toNode);
+        closeEdges.clear();
+        for(int i = pathIndex;i > pathIndex - 2 && i > 0; i--){
+          Node nextNode = path.get(i);
+          Node nextNextNode = path.get(i - 1);
+          NetworkEdge e = map.edgeManager.findEdge(nextNode, nextNextNode);
+          closeEdges.add(e);
+        }
       }
     }
   }
@@ -393,6 +402,7 @@ public class Agent {
         pos = destNodePos;
         map.edgeManager.removeEdge(this);
         edge = null;
+        closeEdges.clear();
         setupNextTrip();
       } else {
         // Not destination. Look for next node.
@@ -400,13 +410,19 @@ public class Agent {
         pathIndex -= 1;
         toNode = path.get(pathIndex);
         afterNode = pathIndex > 1 ? path.get(pathIndex - 1) : toNode;
-
-        if(mobilityType.equals("car") && worldId==1){
-          edge = map.edgeManager.updateEdge(this, srcNode, toNode);
+        if(mobilityType.equals("car") && worldId ==1){
+          edge = map.edgeManager.updateEdge(this  , srcNode, toNode);
+          closeEdges.clear();                     
+          for(int i = pathIndex;i > pathIndex -   2 && i > 0; i--){
+            Node nextNode = path.get(i);          
+            Node nextNextNode = path.get(i - 1);  
+            NetworkEdge e = map.edgeManager.findEdge(nextNode, nextNextNode);
+            closeEdges.add(e);
+          }
         }
       }
     } else {
-      // Not arrived to node
+      // Not arrived to toNode
       pos.add(dir);
     }
   }
@@ -418,9 +434,11 @@ public class Agent {
       // do we liner? sigmoid? 
       float adjustedSpeed = cubicEase(coef) * maxSpeed;
       // float adjustedSpeed = coef * maxSpeed;
+      
       if(edge.agents.size() > 4){
         adjustedSpeed = adjustedSpeed * 0.4 + (adjustedSpeed * 0.6 / edge.agents.size());
       }
+
       adjustedSpeed = min(max(adjustedSpeed, maxSpeed * 0.2), maxSpeed);
       speed = adjustedSpeed;
     } else {
