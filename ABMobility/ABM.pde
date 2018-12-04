@@ -212,7 +212,7 @@ public class World {
     int numNormalAgents = NUM_AGENTS_PER_WORLD;
     int numZombieAgents = 0;
     if (id == 1) {
-      numZombieAgents = int((0.5)*NUM_AGENTS_PER_WORLD);  // Additional 50% -- This number should be tweaked.
+      // numZombieAgents = int((0.5)*NUM_AGENTS_PER_WORLD);  // Additional 50% -- This number should be tweaked.
     }
 
     if (INIT_AGENTS_FROM_DATAFILE) {
