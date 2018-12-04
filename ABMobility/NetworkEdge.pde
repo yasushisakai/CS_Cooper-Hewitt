@@ -55,6 +55,13 @@ class NetworkEdge {
     }
   }
 
+  public void updateCost() {
+    start.setDist(end, length * (1.0 + 0.1 * pow(agents.size(), 2)));
+    if(isBidirectional){
+      end.setDist(end, length * (1.0 + 0.1 * pow(agents.size(), 2)));
+    }
+  }
+
   void draw(PGraphics p){
     if(isVisible){
       int agentsNum = agents.size();
@@ -66,7 +73,6 @@ class NetworkEdge {
       p.line(start.x, start.y, end.x, end.y);
     }
   }
-
 }
 
 class NetworkEdgeManager {
@@ -132,6 +138,7 @@ class NetworkEdgeManager {
   public void update(){
     for(NetworkEdge e: edges){
         e.updateDensity();
+        e.updateCost();
     }
   }
 
